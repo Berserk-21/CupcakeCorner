@@ -17,6 +17,31 @@ struct ContentView: View {
                 Text(item.trackName)
                     .font(.headline)
                 Text(item.collectionName)
+                
+                // With error handling and placeholder
+                AsyncImage(url: URL(string: "https://hws.dev/img/logo.png")) { phase in
+                    if let image = phase.image {
+                        image
+                            .resizable()
+                            .frame(width: 200, height: 200)
+                    } else if phase.error != nil {
+                        Text("There was an error loading the image.")
+                    } else {
+                        // Placeholder
+                        ProgressView()
+                    }
+                }
+                
+                // With placeholder
+                AsyncImage(url: URL(string: "https://hws.dev/img/logo.png")) { image in
+                    image
+                        .resizable()
+                        .frame(width: 200, height: 200)
+                        .scaledToFit()
+                } placeholder: {
+                    Color.red
+                }
+                .frame(width: 200, height: 200)
             })
         }
         .task {
