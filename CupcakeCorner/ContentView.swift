@@ -10,45 +10,37 @@ import CoreHaptics
 
 struct ContentView: View {
     
-    @State private var engine: CHHapticEngine?
+    @State private var order = Order()
     
     var body: some View {
-        Button("Tap Me", action: complexSuccess)
-            .onAppear(perform: {
-                prepareHaptics()
-            })
-    }
-    
-    /// Prepare CHHapticEngine.
-    func prepareHaptics() {
-        guard CHHapticEngine.capabilitiesForHardware().supportsHaptics else { return }
-        
-        do {
-            engine = try CHHapticEngine()
-            try engine?.start()
-        } catch {
-            print("There was an error creating the engine: \(error.localizedDescription)")
-        }
-    }
-    
-    /// Perform a  sharp and intense haptic event.
-    func complexSuccess() {
-        
-        guard CHHapticEngine.capabilitiesForHardware().supportsHaptics else { return }
-        var events = [CHHapticEvent]()
-        
-        // create one intense tap
-        let intensity = CHHapticEventParameter(parameterID: .hapticIntensity, value: 1)
-        let sharpness = CHHapticEventParameter(parameterID: .hapticSharpness, value: 1)
-        let event = CHHapticEvent(eventType: .hapticTransient, parameters: [intensity, sharpness], relativeTime: 0)
-        events.append(event)
-        
-        do {
-            let pattern = try CHHapticPattern(events: events, parameters: [])
-            let player = try engine?.makePlayer(with: pattern)
-            try player?.start(atTime: 0)
-        } catch {
-            print("Failed to play pattern: \(error.localizedDescription)")
+        NavigationStack {
+            Form {
+                Section("Type") {
+                    Picker("Select your cake type", selection: $order.type) {
+                        ForEach(Order.allTypes.indices, id: \.self) {
+                            Text(Order.allTypes[$0])
+                        }
+                    }
+                    
+                    Stepper("Number of cakes: \(order.quantity)", value: $order.quantity)
+                }
+                
+                Section("") {
+                    Toggle("Any special requests ?", isOn: $order.specialRequestsEnabled)
+                    
+                    if order.specialRequestsEnabled {
+                        Toggle("Extra frosting", isOn: $order.extraFrosting)
+                        Toggle("Sprinkles", isOn: $order.addSprinkles)
+                    }
+                }
+                
+                Section() {
+                    NavigationLink("Delivery details") {
+                        AddressView(order: order)
+                    }
+                }
+            }
+            .navigationTitle("Cupcake Corner")
         }
     }
 }
