@@ -12,6 +12,7 @@ class Order {
     
     static let allTypes = ["Vanilla", "Strawberry", "Chocolate", "Rainbow"]
     
+    // Product
     var type = 0
     var quantity = 3
     var specialRequestsEnabled = false {
@@ -24,4 +25,14 @@ class Order {
     }
     var extraFrosting = false
     var addSprinkles = false
+    
+    // Address
+    var name = ""
+    var streetAddress = ""
+    var city = ""
+    var zip = ""
+    
+    var disableCheckout: Bool {
+        return name.isEmpty || streetAddress.isEmpty || city.isEmpty || zip.isEmpty
+    }
 }
