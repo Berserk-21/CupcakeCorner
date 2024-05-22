@@ -9,25 +9,35 @@ import SwiftUI
 
 struct ContentView: View {
     
-    var body: some View {
-        Button("Encode Taylor", action: encodeTaylor)
-    }
+    @State private var counter = 0
     
-    func encodeTaylor() {
-        
-        let data = try! JSONEncoder().encode(User())
-        let str = String(decoding: data, as: UTF8.self)
-        
-        print(str)
+    var body: some View {
+        List {
+            HapticButton(sensoryFeedback: .decrease)
+            HapticButton(sensoryFeedback: .increase)
+            HapticButton(sensoryFeedback: .error)
+            HapticButton(sensoryFeedback: .impact)
+            HapticButton(sensoryFeedback: .levelChange)
+            HapticButton(sensoryFeedback: .pathComplete)
+            HapticButton(sensoryFeedback: .selection)
+            HapticButton(sensoryFeedback: .start)
+            HapticButton(sensoryFeedback: .stop)
+            HapticButton(sensoryFeedback: .success)
+            HapticButton(sensoryFeedback: .warning)
+        }
     }
 }
 
-@Observable
-class User: Codable {
-    var name = "Taylor"
+struct HapticButton: View {
     
-    enum CodingKeys: String, CodingKey {
-        case _name = "name"
+    var sensoryFeedback: SensoryFeedback
+    @State private var counter = 0
+    
+    var body: some View {
+        Button("\(sensoryFeedback)") {
+            counter += 1
+        }
+        .sensoryFeedback(sensoryFeedback, trigger: counter)
     }
 }
 
