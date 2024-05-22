@@ -6,38 +6,50 @@
 //
 
 import SwiftUI
+import CoreHaptics
 
 struct ContentView: View {
     
-    @State private var counter = 0
+    @State private var engine: CHHapticEngine?
     
     var body: some View {
-        List {
-            HapticButton(sensoryFeedback: .decrease)
-            HapticButton(sensoryFeedback: .increase)
-            HapticButton(sensoryFeedback: .error)
-            HapticButton(sensoryFeedback: .impact)
-            HapticButton(sensoryFeedback: .levelChange)
-            HapticButton(sensoryFeedback: .pathComplete)
-            HapticButton(sensoryFeedback: .selection)
-            HapticButton(sensoryFeedback: .start)
-            HapticButton(sensoryFeedback: .stop)
-            HapticButton(sensoryFeedback: .success)
-            HapticButton(sensoryFeedback: .warning)
+        Button("Tap Me", action: complexSuccess)
+            .onAppear(perform: {
+                prepareHaptics()
+            })
+    }
+    
+    /// Prepare CHHapticEngine.
+    func prepareHaptics() {
+        guard CHHapticEngine.capabilitiesForHardware().supportsHaptics else { return }
+        
+        do {
+            engine = try CHHapticEngine()
+            try engine?.start()
+        } catch {
+            print("There was an error creating the engine: \(error.localizedDescription)")
         }
     }
-}
-
-struct HapticButton: View {
     
-    var sensoryFeedback: SensoryFeedback
-    @State private var counter = 0
-    
-    var body: some View {
-        Button("\(sensoryFeedback)") {
-            counter += 1
+    /// Perform a  sharp and intense haptic event.
+    func complexSuccess() {
+        
+        guard CHHapticEngine.capabilitiesForHardware().supportsHaptics else { return }
+        var events = [CHHapticEvent]()
+        
+        // create one intense tap
+        let intensity = CHHapticEventParameter(parameterID: .hapticIntensity, value: 1)
+        let sharpness = CHHapticEventParameter(parameterID: .hapticSharpness, value: 1)
+        let event = CHHapticEvent(eventType: .hapticTransient, parameters: [intensity, sharpness], relativeTime: 0)
+        events.append(event)
+        
+        do {
+            let pattern = try CHHapticPattern(events: events, parameters: [])
+            let player = try engine?.makePlayer(with: pattern)
+            try player?.start(atTime: 0)
+        } catch {
+            print("Failed to play pattern: \(error.localizedDescription)")
         }
-        .sensoryFeedback(sensoryFeedback, trigger: counter)
     }
 }
 
