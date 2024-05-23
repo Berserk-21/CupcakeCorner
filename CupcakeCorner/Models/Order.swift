@@ -8,7 +8,7 @@
 import SwiftUI
 
 @Observable
-class Order {
+class Order: Codable {
     
     static let allTypes = ["Vanilla", "Strawberry", "Chocolate", "Rainbow"]
     
