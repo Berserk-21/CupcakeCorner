@@ -45,7 +45,18 @@ class Order: Codable {
     var zip = ""
     
     var disableCheckout: Bool {
-        return name.isEmpty || streetAddress.isEmpty || city.isEmpty || zip.isEmpty
+        
+        // Check only whitespaces
+        if name.trimmingCharacters(in: .whitespaces).count == 0 || streetAddress.trimmingCharacters(in: .whitespaces).count == 0 || city.trimmingCharacters(in: .whitespaces).count == 0 || zip.trimmingCharacters(in: .whitespaces).count == 0 {
+            return true
+        }
+        
+        // Check isEmpty
+        if name.isEmpty || streetAddress.isEmpty || city.isEmpty || zip.isEmpty {
+            return true
+        }
+        
+        return false
     }
     
     // Price
