@@ -35,4 +35,26 @@ class Order {
     var disableCheckout: Bool {
         return name.isEmpty || streetAddress.isEmpty || city.isEmpty || zip.isEmpty
     }
+    
+    // Price
+    var cost: Double {
+        
+        // 2$ per cake
+        var cost = 2 * Double(quantity)
+        
+        // complicated cakes cost more
+        cost += (Double(type) / 2)
+        
+        // 1$ per extraFrosting
+        if extraFrosting {
+            cost += (1 * Double(quantity))
+        }
+        
+        // 0.5$ per extraFrosting
+        if addSprinkles {
+            cost += (0.5 * Double(quantity))
+        }
+        
+        return cost
+    }
 }
