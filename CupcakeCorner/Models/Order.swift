@@ -5,10 +5,12 @@
 //  Created by Berserk on 22/05/2024.
 //
 
-import SwiftUI
+import Foundation
 
 @Observable
 class Order: Codable {
+    
+    static let allTypes = ["Vanilla", "Strawberry", "Chocolate", "Rainbow"]
     
     enum CodingKeys: String, CodingKey {
         case _type = "type"
@@ -16,13 +18,8 @@ class Order: Codable {
         case _specialRequestsEnabled = "specialRequestsEnabled"
         case _extraFrosting = "extraFrosting"
         case _addSprinkles = "addSprinkles"
-        case _name = "name"
-        case _streetAddress = "streetAddress"
-        case _city = "city"
-        case _zip = "zip"
+        case _address = "address"
     }
-    
-    static let allTypes = ["Vanilla", "Strawberry", "Chocolate", "Rainbow"]
     
     // Product
     var type = 0
@@ -39,20 +36,27 @@ class Order: Codable {
     var addSprinkles = false
     
     // Address
-    var name = ""
-    var streetAddress = ""
-    var city = ""
-    var zip = ""
+    var address: Address {
+        didSet {
+            if let encoded = try? JSONEncoder().encode(address) {
+                UserDefaults.standard.setValue(encoded, forKey: "address")
+            }
+        }
+    }
+    
+    init() {
+        if let data = UserDefaults.standard.data(forKey: "address"), let address = try? JSONDecoder().decode(Address.self, from: data) {
+            self.address = address
+            return
+        }
+        
+        address = Address()
+    }
     
     var disableCheckout: Bool {
         
-        // Check only whitespaces
-        if name.trimmingCharacters(in: .whitespaces).count == 0 || streetAddress.trimmingCharacters(in: .whitespaces).count == 0 || city.trimmingCharacters(in: .whitespaces).count == 0 || zip.trimmingCharacters(in: .whitespaces).count == 0 {
-            return true
-        }
-        
-        // Check isEmpty
-        if name.isEmpty || streetAddress.isEmpty || city.isEmpty || zip.isEmpty {
+        // Check empty after trimming whitespaces
+        if address.name.isEmptyAfterTrimming() || address.streetAddress.isEmptyAfterTrimming() || address.city.isEmptyAfterTrimming() || address.zip.isEmptyAfterTrimming() {
             return true
         }
         
@@ -79,5 +83,21 @@ class Order: Codable {
         }
         
         return cost
+    }
+}
+
+struct Address: Codable {
+    // Address
+    var name = ""
+    var streetAddress = ""
+    var city = ""
+    var zip = ""
+}
+
+extension String {
+    
+    /// Trims whitespaces then return the result of isEmpty check.
+    func isEmptyAfterTrimming() -> Bool {
+        return self.trimmingCharacters(in: .whitespaces).isEmpty
     }
 }
