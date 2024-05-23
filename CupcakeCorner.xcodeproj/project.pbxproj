@@ -58,9 +58,7 @@
 			isa = PBXGroup;
 			children = (
 				2C27816B2BFE30360009AE09 /* CupcakeCornerApp.swift */,
-				2C27816D2BFE30360009AE09 /* ContentView.swift */,
-				2C27817C2BFE52B40009AE09 /* AddressView.swift */,
-				2C27817E2BFE550D0009AE09 /* CheckoutView.swift */,
+				2C8A82802BFF5061009CFEDF /* Views */,
 				2C27817B2BFE32AF0009AE09 /* Models */,
 				2C27816F2BFE30370009AE09 /* Assets.xcassets */,
 				2C2781712BFE30370009AE09 /* Preview Content */,
@@ -82,6 +80,16 @@
 				2C2781792BFE32AB0009AE09 /* Order.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		2C8A82802BFF5061009CFEDF /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				2C27816D2BFE30360009AE09 /* ContentView.swift */,
+				2C27817C2BFE52B40009AE09 /* AddressView.swift */,
+				2C27817E2BFE550D0009AE09 /* CheckoutView.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
