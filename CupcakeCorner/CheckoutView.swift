@@ -63,11 +63,13 @@ struct CheckoutView: View {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
         do {
-            let (data, response) = try await URLSession.shared.upload(for: request, from: encodedData)
+            let (data, _) = try await URLSession.shared.upload(for: request, from: encodedData)
             
             let decodedOrder = try JSONDecoder().decode(Order.self, from: data)
             
-            confirmationMessage = "Your order for \(decodedOrder.quantity) * \(Order.allTypes[decodedOrder.type].lowercased()) cupcakes is on it's way!"
+            confirmationMessage = "Your order for \(decodedOrder.quantity) \(Order.allTypes[decodedOrder.type].lowercased()) cupcakes is on it's way!"
+            showingConfirmation = true
+            
         } catch {
             print("Failed to upload encoded data: \(error.localizedDescription)")
         }
