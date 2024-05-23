@@ -14,6 +14,9 @@ struct CheckoutView: View {
     @State private var confirmationMessage = ""
     @State private var showingConfirmation = false
     
+    @State private var errorMessage = ""
+    @State private var showingErrorMessage = false
+    
     var body: some View {
         ScrollView(.vertical) {
             VStack {
@@ -40,6 +43,11 @@ struct CheckoutView: View {
             Button("OK") {}
         }, message: {
             Text(confirmationMessage)
+        })
+        .alert("The order failed!", isPresented: $showingErrorMessage, actions: {
+            Button("OK") {}
+        }, message: {
+            Text(errorMessage)
         })
         .navigationTitle("Check out")
         .navigationBarTitleDisplayMode(.inline)
@@ -72,6 +80,8 @@ struct CheckoutView: View {
             
         } catch {
             print("Failed to upload encoded data: \(error.localizedDescription)")
+            errorMessage = error.localizedDescription
+            showingErrorMessage = true
         }
         
     }
